@@ -16,7 +16,7 @@ Show the file sizes in the media picker, ported to Next.
 
 * Same behavior as MSMA's legacy vendetta plugin.
 
-### Install
+## Install
 
 Add the following repository to Revenge Next:
 
