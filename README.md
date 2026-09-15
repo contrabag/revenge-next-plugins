@@ -1,8 +1,8 @@
-# Revenge Next Plugin(s?) - contrabags 
+# Revenge Next Plugins - contrabags 
 
-A singular plugin for Revenge Next.
+Ported plugins for Revenge Next.
 
-## Plugin
+## Plugins
 
 ### System Emoji
 
@@ -24,7 +24,7 @@ Add the following repository to Revenge Next:
 https://contrabag.github.io/revenge-next-plugins/
 ```
 
-Then install **System Emoji** from the plugin list.
+Then install whichever plugin by contrabags from the plugin list.
 
 ## Credits
 
