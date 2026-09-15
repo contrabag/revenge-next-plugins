@@ -121,6 +121,29 @@
           }
         }
       }
+    },
+    "contrabag.systememoji": {
+      "name": "System Emoji",
+      "description": "Replaces Twemoji with system emoji in messages, ported to Next",
+      "author": "contrabags, nexpid",
+      "channels": {
+        "latest": "1.7.5"
+      },
+      "versions": {
+        "1.7.5": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.5.zip",
+          "sha256": "7d0eac549cd59e315c25e1bb285f86812f9b71dabb509e27d5b4dd2c7e1d3dc7",
+          "size": 969,
+          "dependencies": {
+            "revenge.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
     }
   }
 }
