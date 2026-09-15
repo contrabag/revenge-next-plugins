@@ -1,138 +1,19 @@
 {
   "format": 1,
-  "name": "Revenge Next Plugins by contrabag",
+  "name": "Revenge Next Plugins by contrabags",
   "description": "Repo of some ported, niche plugins.",
   "plugins": {
-    "com.example.always-errors": {
-      "name": "Always Errors",
-      "description": "A plugin that always throws errors.",
-      "author": "Your Name",
-      "icon": "CircleErrorIcon",
-      "channels": {
-        "latest": "1.0.0"
-      },
-      "versions": {
-        "1.0.0": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/com.example.always-errors@1.0.0.zip",
-          "sha256": "c6ce94e5cf205d988aa4155062d83023fb2daa68cf899dc359e82e9f2e512995",
-          "size": 548,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        }
-      }
-    },
-    "com.example.dependent": {
-      "name": "Example Dependent",
-      "description": "Depends on Example Library. Also installs the library.",
-      "author": "Your Name",
-      "channels": {
-        "latest": "1.0.0"
-      },
-      "versions": {
-        "1.0.0": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/com.example.dependent@1.0.0.zip",
-          "sha256": "65d7f883175b3b5dae10f54218aea269535a9eaa62299123a9afc3505e34dee3",
-          "size": 591,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            },
-            "com.example.library": {
-              "version": ">=1 <2"
-            }
-          }
-        }
-      }
-    },
-    "com.example.js-plugin": {
-      "name": "JS Plugin",
-      "description": "A JS-only example plugin without any native code.",
-      "author": "Your Name",
-      "channels": {
-        "latest": "1.0.0"
-      },
-      "versions": {
-        "1.0.0": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/com.example.js-plugin@1.0.0.zip",
-          "sha256": "643888550db907fce78118e3f6653b42efb1a840ec4c62cd9ba59cec2a86cf34",
-          "size": 561,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        }
-      }
-    },
-    "com.example.library": {
-      "name": "Example Library",
-      "description": "A plugin other plugins can depend on. See Example Dependent.",
-      "author": "Your Name",
-      "channels": {
-        "latest": "1.0.0"
-      },
-      "versions": {
-        "1.0.0": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/com.example.library@1.0.0.zip",
-          "sha256": "52ac705492a777a587540e82836a1a6388c511f3509476f442ab48560b771f83",
-          "size": 590,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        }
-      }
-    },
-    "com.example.plugin": {
-      "name": "UseSystemEmojis",
-      "description": "Native System Emojis.",
-      "author": "contrabags, nexpid",
-      "channels": {
-        "latest": "1.7.4"
-      },
-      "versions": {
-        "1.7.4": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/com.example.plugin@1.7.4.zip",
-          "sha256": "411c36b63299c57f0d6e3d57e0e85092c70faf85f450c4679e8effb620677f73",
-          "size": 984,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        }
-      }
-    },
     "contrabag.systememoji": {
       "name": "System Emoji",
       "description": "Replaces Twemoji with system emoji in messages, ported to Next",
       "author": "contrabags, nexpid",
       "channels": {
-        "latest": "1.7.6"
+        "latest": "1.7.7"
       },
       "versions": {
-        "1.7.5": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.5.zip",
-          "sha256": "7d0eac549cd59e315c25e1bb285f86812f9b71dabb509e27d5b4dd2c7e1d3dc7",
+        "1.7.6": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.6.zip",
+          "sha256": "b0f218fcbfa77c323dbcc2b7a2348ba6a63e3a851c1e3f6702eddd2180484598",
           "size": 969,
           "dependencies": {
             "revenge.api": {
@@ -143,9 +24,9 @@
             }
           }
         },
-        "1.7.6": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.6.zip",
-          "sha256": "b0f218fcbfa77c323dbcc2b7a2348ba6a63e3a851c1e3f6702eddd2180484598",
+        "1.7.7": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.7.zip",
+          "sha256": "d59feead32273e4b46ab1a54824e393b997cc9e9652b37c6574e0b08e0462f9b",
           "size": 969,
           "dependencies": {
             "revenge.api": {
