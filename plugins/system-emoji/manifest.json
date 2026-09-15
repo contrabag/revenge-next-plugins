@@ -4,7 +4,7 @@
   "name": "System Emoji",
   "description": "Replaces Twemoji with system emoji in messages, ported to Next",
   "author": "contrabags, nexpid",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "dependencies": {
     "revenge.api": {
       "version": ">=1 <2"

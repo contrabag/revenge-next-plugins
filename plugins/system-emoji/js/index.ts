@@ -18,15 +18,6 @@ type MessageRow = {
     [key: string]: any
 }
 
-/**
- * Faithful port of Nexpid's original iterate() function.
- *
- * - Converts normal Discord emoji rows into text rows, so they use
- *   the system emoji font.
- * - Preserves customEmoji rows.
- * - Preserves Discord's jumbo emoji behavior using jumboable.
- * - Recursively handles nested content/items arrays.
- */
 function iterate(rows: ContentRow[]): ContentRow[] {
     const content: ContentRow[] = []
 
@@ -35,8 +26,6 @@ function iterate(rows: ContentRow[]): ContentRow[] {
     for (const original of rows) {
         let row = original
 
-        // Replace Discord's Twemoji emoji node with ordinary text
-        // containing the Unicode surrogate.
         if (row.type === 'emoji') {
             row = {
                 type: 'text',
@@ -44,7 +33,6 @@ function iterate(rows: ContentRow[]): ContentRow[] {
             }
         }
 
-        // Recursively process styled/nested content.
         if ('content' in row && Array.isArray(row.content)) {
             row.content = iterate(row.content)
         }
@@ -53,7 +41,6 @@ function iterate(rows: ContentRow[]): ContentRow[] {
             row.items = iterate(row.items)
         }
 
-        // Start a jumbo header when Discord says this row is jumboable.
         if (
             'jumboable' in original &&
             original.jumboable &&
@@ -66,7 +53,6 @@ function iterate(rows: ContentRow[]): ContentRow[] {
             }
         }
 
-        // A non-jumbo emoji/custom emoji ends the jumbo group.
         if (
             (original.type === 'emoji' ||
                 original.type === 'customEmoji') &&
@@ -84,7 +70,6 @@ function iterate(rows: ContentRow[]): ContentRow[] {
         }
     }
 
-    // Flush an unfinished jumbo group.
     if (header) {
         content.push(header)
     }
