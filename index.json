@@ -3,6 +3,30 @@
   "name": "Revenge Next Plugins by contrabags",
   "description": "Repo of some ported, niche plugins.",
   "plugins": {
+    "contrabag.filesize": {
+      "name": "File Size on Picker",
+      "description": "Show the file sizes in the media picker, ported to Next",
+      "author": "contrabags, MSMA",
+      "icon": "FileIcon",
+      "channels": {
+        "latest": "1.0.5"
+      },
+      "versions": {
+        "1.0.5": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.filesize@1.0.5.zip",
+          "sha256": "70e0f8e67f704bcbfe99fb0bd4ca46afbec8e3ba9b7563acf8b618651f9a1fbd",
+          "size": 1238,
+          "dependencies": {
+            "revenge.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    },
     "contrabag.systememoji": {
       "name": "System Emoji",
       "description": "Replaces Twemoji with system emoji in messages, ported to Next",
