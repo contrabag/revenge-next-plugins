@@ -1,23 +1,19 @@
 {
-	"format": 1,
-	"id": "com.example.plugin",
-	"name": "UseSystemEmojis",
-	"description": "Native System Emojis.",
-	"author": "contrabags, nexpid",
-	"version": "1.7.4",
-	"dependencies": {
-		"revenge.api": {
-			"version": ">=1 <2"
-		},
-		"discord": {
-			"version": "*"
-		}
-	},
-	"dist": {
-		"script": "index.js",
-		"android": {
-			"path": "plugin.jar",
-			"class": "com.example.plugin.MyPlugin"
-		}
-	}
+  "format": 1,
+  "id": "contrabag.systememoji",
+  "name": "System Emoji",
+  "description": "Replaces Twemoji with system emoji in messages, ported to Next",
+  "author": "contrabags, nexpid",
+  "version": "1.7.5",
+  "dependencies": {
+    "revenge.api": {
+      "version": ">=1 <2"
+    },
+    "discord": {
+      "version": "*"
+    }
+  },
+  "dist": {
+    "script": "index.js"
+  }
 }
