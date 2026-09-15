@@ -7,13 +7,14 @@
       "name": "System Emoji",
       "description": "Replaces Twemoji with system emoji in messages, ported to Next",
       "author": "contrabags, nexpid",
+      "icon": "EmojiColdFaceIcon",
       "channels": {
-        "latest": "1.7.7"
+        "latest": "1.7.8"
       },
       "versions": {
-        "1.7.6": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.6.zip",
-          "sha256": "b0f218fcbfa77c323dbcc2b7a2348ba6a63e3a851c1e3f6702eddd2180484598",
+        "1.7.7": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.7.zip",
+          "sha256": "d59feead32273e4b46ab1a54824e393b997cc9e9652b37c6574e0b08e0462f9b",
           "size": 969,
           "dependencies": {
             "revenge.api": {
@@ -24,10 +25,10 @@
             }
           }
         },
-        "1.7.7": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.7.zip",
-          "sha256": "d59feead32273e4b46ab1a54824e393b997cc9e9652b37c6574e0b08e0462f9b",
-          "size": 969,
+        "1.7.8": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.8.zip",
+          "sha256": "7f609e6b12ffba3d2ea2b0ec1048dc9bc3dbb480ed83a4edc3d8072ee04918be",
+          "size": 984,
           "dependencies": {
             "revenge.api": {
               "version": ">=1 <2"
