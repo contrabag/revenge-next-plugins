@@ -8,7 +8,7 @@ Ported plugins for Revenge Next.
 
 Replaces Twemoji with system emoji in messages, ported to Next.
 
-* Same behavior as Nexpid's original plugin, down to the flaws.
+* Same behavior as Nexpid's original plugin, down to the flaws. (+ small improvements)
 
 ### File Size on Picker
 
