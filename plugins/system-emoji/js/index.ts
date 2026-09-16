@@ -1,124 +1,169 @@
-import { before } from '@revenge-mod/patcher'
+const { before } = revenge.patcher
 
-type ContentRow = {
-    type: string
-    content?: string | ContentRow[]
-    items?: ContentRow[]
-    surrogate?: string
-    jumboable?: boolean
-    [key: string]: any
-}
+const NativeChatModule =
+    (globalThis as any).nativeModuleProxy?.NativeChatModule
 
-type MessageRow = {
-    type: number
-    message?: {
-        content?: ContentRow[]
-        [key: string]: any
+let unpatch: (() => void) | undefined
+
+function iterate(rows: any[]) {
+    const content: any[] = []
+
+    let header:
+        | {
+              type: "heading"
+              level: number
+              content: any[]
+          }
+        | undefined
+
+    function flushHeader() {
+        if (!header) {
+            return
+        }
+
+        content.push(header)
+        header = undefined
     }
-    [key: string]: any
-}
-
-function iterate(rows: ContentRow[]): ContentRow[] {
-    const content: ContentRow[] = []
-
-    let header: ContentRow | undefined
 
     for (const original of rows) {
         let row = original
 
-        if (row.type === 'emoji') {
+        if (row?.type === "emoji") {
             row = {
-                type: 'text',
-                content: row.surrogate ?? '',
-            }
-        }
-
-        if ('content' in row && Array.isArray(row.content)) {
-            row.content = iterate(row.content)
-        }
-
-        if ('items' in row && Array.isArray(row.items)) {
-            row.items = iterate(row.items)
-        }
-
-        if (
-            'jumboable' in original &&
-            original.jumboable &&
-            !header
-        ) {
-            header = {
-                type: 'heading',
-                level: 1,
-                content: [],
+                type: "text",
+                content: row.surrogate,
             }
         }
 
         if (
-            (original.type === 'emoji' ||
-                original.type === 'customEmoji') &&
-            !original.jumboable &&
-            header
+            "content" in row &&
+            Array.isArray(row.content)
         ) {
-            content.push(header)
-            header = undefined
+            row.content =
+                iterate(row.content)
         }
 
-        if (header) {
-            ;(header.content as ContentRow[]).push(row)
-        } else {
+        if (
+            "items" in row &&
+            Array.isArray(row.items)
+        ) {
+            row.items =
+                iterate(row.items)
+        }
+
+        if (
+            original?.type ===
+            "customEmoji"
+        ) {
+            flushHeader()
             content.push(row)
+            continue
         }
+
+        if (
+            original?.type === "emoji" &&
+            original?.jumboable === true
+        ) {
+            if (!header) {
+                header = {
+                    type: "heading",
+                    level: 1,
+                    content: [],
+                }
+            }
+
+            header.content.push(row)
+            continue
+        }
+
+        if (
+            header &&
+            original?.type === "text" &&
+            original?.jumboable === true
+        ) {
+            header.content.push(row)
+            continue
+        }
+
+        flushHeader()
+        content.push(row)
     }
 
-    if (header) {
-        content.push(header)
-    }
+    flushHeader()
 
     return content
 }
 
 export default plugin({
-    start({ cleanup }) {
-        const chatModule =
-            globalThis.nativeModuleProxy?.NativeChatModule
-
-        if (!chatModule?.updateRows) {
-            console.log(
-                '[use-system-emojis] NativeChatModule.updateRows not found'
+    start() {
+        if (
+            !NativeChatModule?.updateRows
+        ) {
+            throw new Error(
+                "NativeChatModule.updateRows not found",
             )
-            return
         }
 
-        cleanup(
-            before(chatModule, 'updateRows', (args) => {
+        unpatch = before(
+            NativeChatModule,
+            "updateRows",
+            (args) => {
                 try {
-                    const rows = JSON.parse(args[1]) as MessageRow[]
+                    if (
+                        typeof args[1] !==
+                        "string"
+                    ) {
+                        return args
+                    }
+
+                    const rows =
+                        JSON.parse(args[1])
+
+                    if (!Array.isArray(rows)) {
+                        return args
+                    }
 
                     for (const row of rows) {
-                        if (
-                            row.type === 1 &&
-                            row.message?.content
-                        ) {
-                            row.message.content = iterate(
-                                row.message.content
+                        try {
+                            if (
+                                row?.type !== 1 ||
+                                !Array.isArray(
+                                    row?.message
+                                        ?.content,
+                                )
+                            ) {
+                                continue
+                            }
+
+                            row.message.content =
+                                iterate(
+                                    row.message
+                                        .content,
+                                )
+                        } catch (error) {
+                            console.error(
+                                "[SystemEmojis] Failed to process row",
+                                error,
                             )
                         }
                     }
 
-                    args[1] = JSON.stringify(rows)
+                    args[1] =
+                        JSON.stringify(rows)
                 } catch (error) {
                     console.error(
-                        '[use-system-emojis] Failed to process updateRows:',
-                        error
+                        "[SystemEmojis] updateRows error",
+                        error,
                     )
                 }
 
                 return args
-            })
+            },
         )
+    },
 
-        console.log(
-            '[use-system-emojis] NativeChatModule.updateRows patched'
-        )
+    stop() {
+        unpatch?.()
+        unpatch = undefined
     },
 })

@@ -4,8 +4,8 @@
   "name": "RealMoji",
   "description": "Makes freemojis real (Client-side only), ported to Next",
   "author": "contrabags, redstonekasi, Purple Eye",
-  "icon": "emoji-neutral",
-  "version": "1.0.0",
+  "icon": "SuperReactionIcon",
+  "version": "1.0.8",
   "dependencies": {
     "revenge.api": {
       "version": ">=1 <2"

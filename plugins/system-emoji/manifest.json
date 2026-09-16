@@ -5,7 +5,7 @@
   "description": "Replaces Twemoji with system emoji in messages, ported to Next",
   "author": "contrabags, nexpid",
   "icon": "EmojiColdFaceIcon",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "dependencies": {
     "revenge.api": {
       "version": ">=1 <2"
