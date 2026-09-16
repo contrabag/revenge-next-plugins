@@ -31,15 +31,15 @@
       "name": "RealMoji",
       "description": "Makes freemojis real (Client-side only), ported to Next",
       "author": "contrabags, redstonekasi, Purple Eye",
-      "icon": "emoji-neutral",
+      "icon": "SuperReactionIcon",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.0.8"
       },
       "versions": {
-        "1.0.0": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.realmoji@1.0.0.zip",
-          "sha256": "2345a495e52cddad1a59c93c0de678cf37386c464fdab2a97f2809523ff302e6",
-          "size": 1433,
+        "1.0.8": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.realmoji@1.0.8.zip",
+          "sha256": "5e0e7ac1b7b9505691ac57a015f1fa7f4ff9719b67c50efb236d5855227faa74",
+          "size": 1727,
           "dependencies": {
             "revenge.api": {
               "version": ">=1 <2"
@@ -57,13 +57,26 @@
       "author": "contrabags, nexpid",
       "icon": "EmojiColdFaceIcon",
       "channels": {
-        "latest": "1.7.8"
+        "latest": "1.7.9"
       },
       "versions": {
         "1.7.8": {
           "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.8.zip",
           "sha256": "7f609e6b12ffba3d2ea2b0ec1048dc9bc3dbb480ed83a4edc3d8072ee04918be",
           "size": 984,
+          "dependencies": {
+            "revenge.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.7.9": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.7.9.zip",
+          "sha256": "449fbed99c6ccc9ad257bdb2614a93591c47da38e708df535c2e5aebbc761b50",
+          "size": 1040,
           "dependencies": {
             "revenge.api": {
               "version": ">=1 <2"
