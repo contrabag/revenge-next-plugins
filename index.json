@@ -27,6 +27,30 @@
         }
       }
     },
+    "contrabag.realmoji": {
+      "name": "RealMoji",
+      "description": "Makes freemojis real (Client-side only), ported to Next",
+      "author": "contrabags, redstonekasi, Purple Eye",
+      "icon": "emoji-neutral",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.realmoji@1.0.0.zip",
+          "sha256": "2345a495e52cddad1a59c93c0de678cf37386c464fdab2a97f2809523ff302e6",
+          "size": 1433,
+          "dependencies": {
+            "revenge.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    },
     "contrabag.systememoji": {
       "name": "System Emoji",
       "description": "Replaces Twemoji with system emoji in messages, ported to Next",
