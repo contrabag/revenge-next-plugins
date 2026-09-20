@@ -8,7 +8,7 @@ Ported plugins for Revenge Next.
 
 Replaces Twemoji with system emoji in messages, ported to Next.
 
-* Same behavior as Nexpid's original plugin, down to the flaws.
+* Same behavior as Nexpid's original plugin, down to the flaws. (+ small improvements)
 
 ### File Size on Picker
 
@@ -20,7 +20,7 @@ Show the file sizes in the media picker, ported to Next.
 
 Makes freemojis real (Client-side only), ported to Next
 
-* Same behavior as redstonekasi & Purple Eye's original plugin, down to the flaws.
+* Same behavior as redstonekasi & Purple Eye's original plugin.
 
 ## Install
 
