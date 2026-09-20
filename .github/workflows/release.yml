@@ -46,6 +46,20 @@ jobs:
         id: plan
         run: .github/scripts/plan-releases.sh
 
+      - name: Check out Revenge native API
+        if: steps.plan.outputs.count != '0'
+        uses: actions/checkout@v4
+        with:
+          repository: revenge-mod/revenge-xposed
+          ref: b4de869199c3b1bf4537450fdf2d410d4eb3031a
+          path: .native-api
+          persist-credentials: false
+
+      - name: Prepare Revenge native API
+        if: steps.plan.outputs.count != '0'
+        working-directory: .native-api
+        run: bash ./gradlew --no-daemon :api:publishToMavenLocal
+
       - name: Build plugins
         if: steps.plan.outputs.count != '0'
         run: ./gradlew --no-daemon packageAllPlugins
