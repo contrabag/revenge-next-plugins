@@ -27,13 +27,13 @@ import android.widget.ImageView
 
 private const val ARTWORK = "contrabag.systememoji.artwork"
 private const val STATUS = "contrabag.systememoji.reactions.status"
-private var session: ReactionSession? = null
+private var session: EmojiSession? = null
 
 @Suppress("UNUSED")
 val systemEmojiPlugin = plugin {
     start {
         session?.close()
-        val next = ReactionSession()
+        val next = EmojiSession()
         session = next
         registerNativeMethod(STATUS) { next.status() }
         registerNativeMethod(ARTWORK) { args -> next.artwork(args) }
@@ -69,7 +69,7 @@ val systemEmojiPlugin = plugin {
     }
 }
 
-private class ReactionSession {
+private class EmojiSession {
     @Volatile private var active = false
     @Volatile private var messagesActive = false
     @Volatile private var pickerActive = false

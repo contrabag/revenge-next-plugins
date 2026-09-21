@@ -5,7 +5,7 @@
   "description": "System Emojis in messages, the emoji picker, and native reaction pills.",
   "author": "contrabags",
   "icon": "EmojiColdFaceIcon",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "dependencies": {
     "revenge.api": {
       "version": ">=1 <2"
