@@ -1,14 +1,25 @@
 # Revenge Next Plugins - contrabags 
 
-Ported plugins for Revenge Next.
+Plugins for Revenge Next.
 
 ## Plugins
 
 ### System Emoji
 
-Replaces Twemoji with system emoji in messages, ported to Next.
+Replaces Twemoji with system emojis in reactions, quick react menu, messages, and the emoji picker.
 
-* Same behavior as Nexpid's original plugin, down to the flaws. (+ small improvements)
+* **Improvements over Nexpid's original plugin**
+
+》 System Emojis are now correctly sized and interactable
+
+》 There are no longer any gaps between emojis and text messages
+
+》 System Emojis now render in reactions & quick react menu
+
+》 System Emojis now render in the emoji picker
+
+》 Full compatibility with FakeNitro in the emoji picker
+
 
 ### File Size on Picker
 
