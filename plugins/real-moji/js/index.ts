@@ -1,570 +1,120 @@
-const { before } = revenge.patcher
+import { lookupModules } from '@revenge-mod/modules/finders'
+import { withProps } from '@revenge-mod/modules/finders/filters'
+import { getNativeModule } from '@revenge-mod/modules/native'
+import { before } from '@revenge-mod/patcher'
 
-const { lookupModules } =
-    revenge.modules.finders
-
-const { withProps } =
-    revenge.modules.finders.filters
-
-const emojiRegex =
-    /https:\/\/cdn\.discordapp\.com\/emojis\/(\d+)\.(\w+)/
-
-const NativeChatModule =
-    (globalThis as any)
-        .nativeModuleProxy
-        ?.NativeChatModule
-
-let unpatch:
-    | (() => void)
-    | undefined
-
-let cachedEmojiStore: any
-
-function getEmojiStore() {
-    if (
-        cachedEmojiStore
-            ?.getCustomEmojiById
-    ) {
-        return cachedEmojiStore
-    }
-
-    try {
-        const found =
-            [...lookupModules(
-                withProps(
-                    "getCustomEmojiById",
-                ),
-            )][0]?.[0]
-
-        if (
-            found
-                ?.getCustomEmojiById
-        ) {
-            cachedEmojiStore =
-                found
-
-            return found
-        }
-    } catch {}
-
-    return undefined
+interface EmojiStore {
+    getCustomEmojiById(id: string): { name?: string; animated?: boolean } | undefined
+}
+interface ChatModule {
+    updateRows(...args: any[]): unknown
 }
 
-function getEmojiInfo(
-    url: string,
-) {
-    const match =
-        url.match(emojiRegex)
-
-    if (!match) {
-        return
-    }
-
-    const id =
-        match[1]
-
-    const extension =
-        match[2]
-
-    let parsedUrl:
-        | URL
-        | undefined
-
-    try {
-        parsedUrl =
-            new URL(url)
-    } catch {}
-
-    const EmojiStore =
-        getEmojiStore()
-
-    let emoji: any
-
-    try {
-        emoji =
-            EmojiStore
-                ?.getCustomEmojiById
-                ?.(id)
-    } catch {}
-
-    const name =
-        emoji?.name ??
-        parsedUrl
-            ?.searchParams
-            .get("name") ??
-        "<realmoji>"
-
-    const animated =
-        extension === "gif" ||
-        parsedUrl
-            ?.searchParams
-            .get("animated") ===
-            "true" ||
-        emoji?.animated === true
-
-    const coreUrl =
-        `https://cdn.discordapp.com/emojis/${id}.` +
-        (
-            animated
-                ? "gif"
-                : "webp"
-        )
-
-    const src =
-        `${coreUrl}?size=128`
-
-    return {
-        id,
-        name,
-        src,
-        frozenSrc:
-            src.replace(
-                ".gif",
-                ".webp",
-            ),
-    }
+function parseEmojiUrl(value: unknown) {
+    if (typeof value !== 'string') return null
+    const match = /^https:\/\/cdn\.discordapp\.com\/emojis\/(\d+)\.(png|webp|gif|jpe?g)(?:[?#].*)?$/i.exec(value)
+    if (!match) return null
+    return { id: match[1], extension: match[2].toLowerCase(), url: new URL(value) }
 }
 
-function createCustomEmoji(
-    url: string,
-    jumbo: boolean,
-) {
-    const info =
-        getEmojiInfo(url)
-
-    if (!info) {
-        return
-    }
-
-    return {
-        id: info.id,
-        alt: info.name,
-        src: info.src,
-        frozenSrc:
-            info.frozenSrc,
-        type: "customEmoji",
-        jumboable:
-            jumbo
-                ? true
-                : undefined,
-    }
+function whitespace(node: any): boolean {
+    return node?.type === 'text' && typeof node.content === 'string' && node.content.trim() === ''
 }
 
-function isWhitespaceText(
-    item: any,
-) {
-    return (
-        item?.type ===
-            "text" &&
-        typeof item?.content ===
-            "string" &&
-        item.content.trim() === ""
-    )
-}
-
-function trimOuterWhitespace(
-    content: any[],
-) {
-    while (
-        content.length &&
-        isWhitespaceText(
-            content[0],
-        )
-    ) {
-        content.shift()
-    }
-
-    while (
-        content.length &&
-        isWhitespaceText(
-            content[
-                content.length - 1
-            ],
-        )
-    ) {
-        content.pop()
-    }
-
-    if (
-        content[0]?.type ===
-            "text" &&
-        typeof content[0]
-            ?.content ===
-            "string"
-    ) {
-        content[0].content =
-            content[0]
-                .content
-                .trimStart()
-    }
-
-    const last =
-        content[
-            content.length - 1
-        ]
-
-    if (
-        last?.type ===
-            "text" &&
-        typeof last?.content ===
-            "string"
-    ) {
-        last.content =
-            last.content
-                .trimEnd()
-    }
-}
-
-function convertLinks(
-    content: any[],
-) {
-    if (
-        !Array.isArray(content)
-    ) {
-        return false
-    }
-
-    const meaningful =
-        content.filter(
-            (item: any) =>
-                !isWhitespaceText(
-                    item,
-                ),
-        )
-
-    const jumbo =
-        meaningful.length > 0 &&
-        meaningful.every(
-            (item: any) =>
-                item?.type ===
-                    "link" &&
-                typeof item?.target ===
-                    "string" &&
-                emojiRegex.test(
-                    item.target,
-                ),
-        )
-
-    let converted =
-        false
-
-    for (
-        let i = 0;
-        i < content.length;
-        i++
-    ) {
-        const item =
-            content[i]
-
-        if (
-            item?.type !==
-                "link" ||
-            typeof item?.target !==
-                "string"
-        ) {
-            continue
-        }
-
-        if (
-            !emojiRegex.test(
-                item.target,
-            )
-        ) {
-            continue
-        }
-
-        const emoji =
-            createCustomEmoji(
-                item.target,
-                jumbo,
-            )
-
-        if (!emoji) {
-            continue
-        }
-
-        content[i] =
-            emoji
-
-        converted =
-            true
-    }
-
-    if (converted) {
-        trimOuterWhitespace(
-            content,
-        )
-    }
-
-    return converted
-}
-
-function removeEmojiEmbeds(
-    message: any,
-) {
-    if (
-        !Array.isArray(
-            message?.embeds,
-        )
-    ) {
-        return
-    }
-
-    message.embeds =
-        message.embeds.filter(
-            (embed: any) => {
-                const url =
-                    embed?.url ??
-                    embed
-                        ?.image
-                        ?.url
-
-                return !(
-                    embed?.type ===
-                        "image" &&
-                    typeof url ===
-                        "string" &&
-                    emojiRegex.test(
-                        url,
-                    )
-                )
-            },
-        )
-}
-
-function clearEmbedLayout(
-    message: any,
-) {
-    message.useAttachmentGridLayout =
-        false
-
-    message.useAttachmentUploadPreview =
-        false
-}
-
-function convertEmbedOnlyMessage(
-    message: any,
-) {
-
-    if (
-        !Array.isArray(
-            message?.content,
-        ) ||
-        message.content.length !==
-            0 ||
-        !Array.isArray(
-            message?.embeds,
-        )
-    ) {
-        return false
-    }
-
-    const urls:
-        string[] = []
-
-    for (
-        const embed of
-            message.embeds
-    ) {
-        const url =
-            embed?.url ??
-            embed
-                ?.image
-                ?.url
-
-        if (
-            embed?.type ===
-                "image" &&
-            typeof url ===
-                "string" &&
-            emojiRegex.test(
-                url,
-            )
-        ) {
-            urls.push(url)
-        }
-    }
-
-    if (!urls.length) {
-        return false
-    }
-
-    const newContent:
-        any[] = []
-
-    for (
-        let i = 0;
-        i < urls.length;
-        i++
-    ) {
-        const emoji =
-            createCustomEmoji(
-                urls[i],
-                true,
-            )
-
-        if (!emoji) {
-            continue
-        }
-
-        if (
-            newContent.length
-        ) {
-            newContent.push({
-                content: " ",
-                type: "text",
-                jumboable: true,
-            })
-        }
-
-        newContent.push(
-            emoji,
-        )
-    }
-
-    if (
-        !newContent.length
-    ) {
-        return false
-    }
-
-    message.content =
-        newContent
-
-    removeEmojiEmbeds(
-        message,
-    )
-
-    clearEmbedLayout(
-        message,
-    )
-
-    return true
-}
-
-function processNativeRow(
-    row: any,
-) {
-    if (
-        row?.type !== 1 ||
-        !row?.message
-    ) {
-        return
-    }
-
-    const message =
-        row.message
-
-    if (
-        convertEmbedOnlyMessage(
-            message,
-        )
-    ) {
-        return
-    }
-
-    if (
-        convertLinks(
-            message.content,
-        )
-    ) {
-        removeEmojiEmbeds(
-            message,
-        )
-
-        clearEmbedLayout(
-            message,
-        )
-    }
-}
-
-function processRows(
-    rows: any[],
-) {
-    if (
-        !Array.isArray(rows)
-    ) {
-        return
-    }
-
-    for (
-        const row of rows
-    ) {
-        try {
-            processNativeRow(
-                row,
-            )
-        } catch (
-            error
-        ) {
-            console.error(
-                "[RealMoji] Failed to process row",
-                error,
-            )
-        }
-    }
+function trimContent(content: any[]) {
+    while (content.length && whitespace(content[0])) content.shift()
+    while (content.length && whitespace(content[content.length - 1])) content.pop()
+    if (content[0]?.type === 'text' && typeof content[0].content === 'string') content[0].content = content[0].content.trimStart()
+    const last = content[content.length - 1]
+    if (last?.type === 'text' && typeof last.content === 'string') last.content = last.content.trimEnd()
 }
 
 export default plugin({
-    start() {
-        if (
-            !NativeChatModule
-                ?.updateRows
-        ) {
-            throw new Error(
-                "NativeChatModule.updateRows not found",
-            )
+    start({ cleanup }) {
+        const chat = getNativeModule<ChatModule>('NativeChatModule')
+        if (!chat || typeof chat.updateRows !== 'function') throw new Error('NativeChatModule.updateRows not found')
+        let store: EmojiStore | undefined
+        cleanup(() => { store = undefined })
+
+        const createEmoji = (value: string, jumbo: boolean) => {
+            const parsed = parseEmojiUrl(value)
+            if (!parsed) return null
+            store ??= [...lookupModules(withProps<EmojiStore>('getCustomEmojiById'))][0]?.[0]
+            const emoji = store?.getCustomEmojiById(parsed.id)
+            const animated = parsed.extension === 'gif' || parsed.url.searchParams.get('animated') === 'true' || emoji?.animated === true
+            const src = `https://cdn.discordapp.com/emojis/${parsed.id}.${animated ? 'gif' : 'webp'}?size=128`
+            return {
+                type: 'customEmoji', id: parsed.id,
+                alt: emoji?.name ?? parsed.url.searchParams.get('name') ?? '<realmoji>',
+                src, frozenSrc: src.replace('.gif', '.webp'),
+                jumboable: jumbo ? true : undefined,
+            }
         }
 
-        unpatch =
-            before(
-                NativeChatModule,
-                "updateRows",
-                (args) => {
+        const transform = (message: any) => {
+            if (!Array.isArray(message?.content)) return null
+            let content = message.content.map((node: any) => ({ ...node }))
+            const convertedIds = new Set<string>()
+            const embedUrl = (embed: any) => embed?.url ?? embed?.image?.url
+            if (content.length === 0 && Array.isArray(message.embeds)) {
+                for (const embed of message.embeds) {
+                    if (embed?.type !== 'image') continue
+                    const converted = createEmoji(embedUrl(embed), true)
+                    if (!converted) continue
+                    if (content.length) content.push({ type: 'text', content: ' ', jumboable: true })
+                    content.push(converted)
+                    convertedIds.add(converted.id)
+                }
+            } else {
+                const meaningful = content.filter((node: any) => !whitespace(node))
+                const jumbo = meaningful.length > 0 && meaningful.every((node: any) => node?.type === 'link' && parseEmojiUrl(node.target))
+                content = content.map((node: any) => {
+                    if (node?.type !== 'link') return node
+                    const converted = createEmoji(node.target, jumbo)
+                    if (!converted) return node
+                    convertedIds.add(converted.id)
+                    return converted
+                })
+                if (convertedIds.size) trimContent(content)
+            }
+            if (!convertedIds.size) return null
+
+            const result = { ...message, content }
+            if (Array.isArray(message.embeds)) {
+                result.embeds = message.embeds.filter((embed: any) => {
+                    if (embed?.type !== 'image') return true
+                    const parsed = parseEmojiUrl(embedUrl(embed))
+                    return !parsed || !convertedIds.has(parsed.id)
+                })
+            }
+            const empty = (value: unknown) => value == null || (Array.isArray(value) && value.length === 0)
+            if (empty(result.attachments) && empty(result.embeds)) {
+                result.useAttachmentGridLayout = false
+                result.useAttachmentUploadPreview = false
+            }
+            return result
+        }
+
+        cleanup(before(chat, 'updateRows', args => {
+            if (typeof args[1] !== 'string') return args
+            try {
+                const rows = JSON.parse(args[1])
+                if (!Array.isArray(rows)) return args
+                let changed = false
+                for (const row of rows) {
+                    if (row?.type !== 1 || !row.message) continue
                     try {
-                        if (
-                            typeof args[1] !==
-                                "string"
-                        ) {
-                            return args
-                        }
-
-                        const rows =
-                            JSON.parse(
-                                args[1],
-                            )
-
-                        processRows(
-                            rows,
-                        )
-
-                        args[1] =
-                            JSON.stringify(
-                                rows,
-                            )
-                    } catch (
-                        error
-                    ) {
-                        console.error(
-                            "[RealMoji] updateRows error",
-                            error,
-                        )
+                        const message = transform(row.message)
+                        if (message) { row.message = message; changed = true }
+                    } catch (error) {
+                        console.error('[RealMoji] Failed to process row', error)
                     }
-
-                    return args
-                },
-            )
-    },
-
-    stop() {
-        try {
-            unpatch?.()
-        } catch {}
-
-        unpatch =
-            undefined
-
-        cachedEmojiStore =
-            undefined
+                }
+                if (changed) args[1] = JSON.stringify(rows)
+            } catch (error) {
+                console.error('[RealMoji] updateRows error', error)
+            }
+            return args
+        }))
     },
 })

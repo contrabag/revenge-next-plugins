@@ -2,10 +2,10 @@
   "format": 1,
   "id": "contrabag.realmoji",
   "name": "RealMoji",
-  "description": "Makes freemojis real (Client-side only), ported to Next",
+  "description": "Makes freemojis real (Client-side only)",
   "author": "contrabags, redstonekasi, Purple Eye",
   "icon": "SuperReactionIcon",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "dependencies": {
     "revenge.api": {
       "version": ">=1 <2"
