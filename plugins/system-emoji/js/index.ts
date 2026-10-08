@@ -1,7 +1,6 @@
 import { callNativeMethodSync } from '@revenge-mod/modules/native'
-import { before, instead } from '@revenge-mod/patcher'
+import { before } from '@revenge-mod/patcher'
 import { ReactNative, ReactJSXRuntime } from '@revenge-mod/react'
-import { beforeJSX } from '@revenge-mod/react/jsx-runtime'
 import type { PluginApi } from '@revenge-mod/plugins/types'
 import type { ImageStyle, StyleProp } from 'react-native'
 
@@ -22,10 +21,10 @@ function decodeAssetEmoji(uri: unknown): string | null {
     }
 }
 
-function imageSize(style: StyleProp<ImageStyle>, sizes: readonly number[]): number | null {
+function imageSize(style: StyleProp<ImageStyle>): number | null {
     const flat = ReactNative.StyleSheet.flatten(style)
     const size = flat?.width
-    return typeof size === 'number' && flat?.height === size && sizes.includes(size) ? size : null
+    return typeof size === 'number' && Number.isFinite(size) && size > 0 && flat?.height === size ? size : null
 }
 
 export default plugin({
@@ -62,34 +61,21 @@ export default plugin({
             return null
         }
 
-        cleanup(beforeJSX(ReactNative.Pressable, args => {
-            try {
-                const props = args[1]
-                const child = props?.children as any
-                const emoji = decodeAssetEmoji(child?.props?.src)
-                if (!emoji || !imageSize(child.props.fastImageStyle, [24])) return args
-                const uri = render(emoji, 24)
-                if (uri) args[1] = {
-                    ...props,
-                    children: { ...child, props: { ...child.props, src: uri } },
-                }
-            } catch (error) {
-                report(error)
-            }
-            return args
-        }))
-
         const replaceMenuImage = (args: Parameters<typeof ReactJSXRuntime.jsx>) => {
             try {
-                const type = args[0] as any
-                if ((typeof type === 'string' ? type : type?.displayName || type?.name) !== 'FastImageAndroid') return args
                 const props = args[1] as any
-                const emoji = decodeAssetEmoji(props?.source?.uri)
+                const srcEmoji = decodeAssetEmoji(props?.src)
+                const sourceEmoji = decodeAssetEmoji(props?.source?.uri)
+                const emoji = srcEmoji ?? sourceEmoji
                 if (!emoji) return args
-                const size = imageSize(props.style, [32, 40])
+                const size = imageSize(props.fastImageStyle) ?? imageSize(props.style)
                 if (!size) return args
                 const uri = render(emoji, size)
-                if (uri) args[1] = { ...props, source: { ...props.source, uri } }
+                if (uri) args[1] = {
+                    ...props,
+                    ...(srcEmoji ? { src: uri } : {}),
+                    ...(sourceEmoji ? { source: { ...props.source, uri } } : {}),
+                }
             } catch (error) {
                 report(error)
             }
@@ -98,11 +84,5 @@ export default plugin({
         cleanup(before(ReactJSXRuntime, 'jsx', replaceMenuImage))
         cleanup(before(ReactJSXRuntime, 'jsxs', replaceMenuImage))
 
-        for (const method of ['warn', 'log', 'info'] as const) {
-            cleanup(instead(console, method, function (args, original) {
-                if (args.some(value => typeof value === 'string' && value.includes("Couldn't find the scrollable node handle id!"))) return
-                return Reflect.apply(original, this, args)
-            }))
-        }
     },
 })

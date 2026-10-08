@@ -51,7 +51,7 @@ val systemEmojiPlugin = plugin {
                 next.recordError(error)
                 log.i("System Emoji: native picker unavailable; Discord picker retained: $error")
             }
-            requireReload()
+            if (startedLate) requireReload()
             log.i("System Emoji: native hooks installed; refresh the channel")
         } catch (error: Throwable) {
             next.recordError(error)
