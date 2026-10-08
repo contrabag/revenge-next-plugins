@@ -60,19 +60,6 @@
         "latest": "1.8.8"
       },
       "versions": {
-        "1.8.5": {
-          "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.8.5.zip",
-          "sha256": "bc2e45d9fb3a71493cff14e0cb62989dfba82432fa93587c352fc89345ff94b8",
-          "size": 19831,
-          "dependencies": {
-            "revenge.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
         "1.8.8": {
           "url": "https://contrabag.github.io/revenge-next-plugins/pool/contrabag.systememoji@1.8.8.zip",
           "sha256": "8c9c1122494d7008147b0c1b4882fee1b03dc63c74c477828b2dd90bb3c0212e",
